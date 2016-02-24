@@ -72,10 +72,10 @@ showStatus() {
         track=$(osascript -e 'tell application "Spotify" to name of current track as string');
         duration=$(osascript -e 'tell application "Spotify" to duration of current track as string');
         duration=$(echo "scale=2; $duration / 60 / 1000" | bc);
-        position=$(osascript -e 'tell application "Spotify" to player position as string');
+        position=$(osascript -e 'tell application "Spotify" to player position as string' | sed 's/\,/./');
         position=$(echo "scale=2; $position / 60" | bc | awk '{printf "%0.2f", $0}');
 
-        echo -e "$reset""Artist: $artist\nAlbum: $album\nTrack: $track \nPosition: $position / $duration";
+        echo "$reset""Artist: $artist\nAlbum: $album\nTrack: $track \nPosition: $position / $duration";
     fi
 }
 
@@ -258,7 +258,7 @@ while [ $# -gt 0 ]; do
             url=${url#$remove}
             url="http://open.spotify.com/track/$url"
             cecho "Share URL: $url";
-            echo -n "$url" | pbcopy
+            echo "$url" | pbcopy
             break;;
 
         "pos")
